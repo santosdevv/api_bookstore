@@ -4,6 +4,7 @@ import { conn } from './config/sequelize.js';
 
 import autorModel from './models/autorModel.js';
 
+import autorRoutes from './routes/autorRoutes.js';
 
 const app = express();
 app.use(cors({
@@ -21,6 +22,8 @@ conn
 .catch((error) => {
     console.log(error)
 });
+
+app.use('/api/autores', autorRoutes);
 
 app.get('/', (req, res) => {
     res.status(200).json({mensagem: 'Hello, World!'});

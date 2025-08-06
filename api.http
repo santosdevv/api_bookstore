@@ -1,1 +1,31 @@
 ### Rotas Sistema de biblioteca
+### AUTORES
+
+### - Listar todos os autores
+GET /api/autores
+
+### - Buscar autor por ID
+GET /api/autores/:id
+
+### - Criar novo autor
+POST /api/autores
+Content-Type: application/json
+
+{
+    "nome": "Nome do Autor",
+    "nacionalidade": "Nacionalidade do Autor",
+    "data_nascimento": "YYYY-MM-DD"
+}   
+
+### - Atualizar autor
+PUT /api/autores/:id
+Content-Type: application/json
+
+{
+    "nome": "Nome do Autor",
+    "nacionalidade": "Nacionalidade do Autor",
+    "data_nascimento": "YYYY-MM-DD"
+}   
+
+### - Deletar autor
+DELETE /api/autores/:id
