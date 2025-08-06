@@ -2,6 +2,9 @@ import express from 'express';
 import cors from 'cors';
 import { conn } from './config/sequelize.js';
 
+import autorModel from './models/autorModel.js';
+
+
 const app = express();
 app.use(cors({
     origin: '*',
@@ -10,7 +13,14 @@ app.use(cors({
 }));
 app.use(express.json());
 
-conn.sync()
+conn
+.sync()
+.then(() => {
+    console.log('Conexão com o banco de dados estabelecida com sucesso');
+})
+.catch((error) => {
+    console.log(error)
+});
 
 app.get('/', (req, res) => {
     res.status(200).json({mensagem: 'Hello, World!'});
