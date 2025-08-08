@@ -33,7 +33,7 @@ export const cadastrarAutor = (req, res) => {
     }
 
     const validaData = new Date(data_nascimento);
-    if (validaData == 'invalid Date') {
+    if (validaData == 'Invalid Date') {
         res.status(400).json({
             erro: 'Campo data_nascimento invalido',
             mensagem: 'Formato de data inválido'
