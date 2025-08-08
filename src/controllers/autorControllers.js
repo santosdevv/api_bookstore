@@ -1,6 +1,6 @@
 import autorModel from '../models/autorModel.js';
 
-export const cadastrarAutor = (req, res) => {
+export const cadastrarAutor = async (req, res) => {
     const { nome, biografia, data_nascimento, nacionalidade } = req.body;
 
     if (!nome){
@@ -54,4 +54,21 @@ export const cadastrarAutor = (req, res) => {
     } catch (error) {
         res.status(500).json({mensagem: 'Erro ao cadastrar autor'});
     }
+}
+
+export const listarTodosAutores = async (req, res) => {
+    const page = parseInt(req.query.page) || 1
+    const limit = parseInt(req.query.limit) || 10
+    const offset = (page - 1) * limit
+
+    try {
+        const autores = await autorModel.findAndCountAll({offset, limit})
+        const totalPaginas = Math.ceil(autores.count / limit)
+        res.status(200).json({totalAutores: autores.count, totalPaginas, paginalAtual: page, autoresPorPagina: limit, autores: autores.rows});
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({mensagem: 'Erro ao listar autores'});
+        
+    } 
+    res.send('Listar todos os autores');
 }
