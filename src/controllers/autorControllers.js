@@ -110,3 +110,17 @@ export const atualizarAutor = async (req, res) => {
         res.status(400).json({ message: 'Erro ao atualizar o autor', error: error.message });
     }
 }
+export const deletarAutor = async (req, res) => {
+    try {
+        const { id } = req.params
+		const autor = await autorModel.findByPk(id)
+		if (autor) {
+			await autor.destroy()
+			res.status(204).send()
+		} else {
+			res.status(404).json({ message: 'autor não encontrado' })
+		}
+	} catch (error) {
+		res.status(500).json({ message: 'Erro ao deletar autor', error})
+	}
+}
