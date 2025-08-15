@@ -72,3 +72,22 @@ export const listarTodosAutores = async (req, res) => {
     } 
     res.send('Listar todos os autores');
 }
+
+export const buscarAutorPorId = async (req, res) => {
+    const {id} = req.params
+
+    if (!id) {
+        res.status(400).json({mensagem: "ID tem que ser valido"})
+    }
+
+    try {
+        const autor = await autorModel.findByPk(id)
+        if (!autor) {
+            res.status(400).json({mensagem: "autor não encontrado"})
+            return
+        }
+        res.status(200).json(autor)
+    } catch (error) {
+        res.status(500).json({mensagem: 'Erro ao listar autor'})
+    }
+}
