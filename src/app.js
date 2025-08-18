@@ -2,8 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { conn } from './config/sequelize.js';
 
-import autorModel from './models/autorModel.js';
-
+import "./models/association.js"
 import autorRoutes from './routes/autorRoutes.js';
 
 const app = express();
