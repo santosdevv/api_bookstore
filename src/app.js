@@ -4,6 +4,7 @@ import { conn } from './config/sequelize.js';
 
 import "./models/association.js"
 import autorRoutes from './routes/autorRoutes.js';
+import livroRoutes from './routes/livroRoutes.js'
 
 const app = express();
 app.use(cors({
@@ -23,6 +24,7 @@ conn
 });
 
 app.use('/api/autores', autorRoutes);
+app.use('/api/livros', livroRoutes);
 
 app.get('/', (req, res) => {
     res.status(200).json({mensagem: 'Hello, World!'});
