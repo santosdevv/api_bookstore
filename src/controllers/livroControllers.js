@@ -125,6 +125,33 @@ export const listarTodosLivros = async (req, res) => {
         })
         res.status(200).json(livrosFormatados)
     } catch (error) {
-        
+        res.status(500).json({mensagem: "Erro ao listar os livros"})
+    }
+}
+
+export const buscarLivro = async (req, res) => {
+    const {id} = req.params
+
+    if (!id) {
+        res.status(400).json({mensagem: "ID obrigatorio"})
+        return
+    }
+
+    try {
+        const livro = await livroModel.findByPk(id, {
+            attributes: {exclude: ["crated_at", "updated_at"]},
+            include: {
+                model: autorModel,
+                through: {attributes: []},
+                attributes: {exclude:["crated_at", "updated_at"]}
+            }
+        })
+        if (!livro) {
+            res.status(404).json({mensagem: "livro não encontrado"})
+            return
+        }
+        res.status(200).json(livro)
+    } catch (error) {
+        res.status(500).json({mensagem: "Erro ao buscar livro"})
     }
 }
