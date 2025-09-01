@@ -83,3 +83,48 @@ export const cadastrarLivro = async (req, res) => {
 
     }
 }
+
+export const listarTodosLivros = async (req, res) => {
+    const page = parseInt(req.query.page) || 1
+    const limit = parseInt(req.query.limit) || 10
+    offset = (page -1) * limit
+
+    try {
+        const livro = await livroModel.findAndCountAll({
+            include: {
+                model: autorModel,
+                through: {attributes: []}
+            },
+            limit,
+            offset
+        })
+        const livrosFormatados = livro.rows.map((livro)=>{
+            return{
+            id: livro.id,
+            titulo: livro.titulo,
+            isbn: livro.isbn,
+            descricao: livro.descricao,
+            ano_publicacao: livro.ano_publicacao,
+            genero: livro.genero,
+            quantidade_total: livro.quantidade_total,
+            quantidade_disponivel: livro.quantidade_disponivel,
+            autores: livro.autores.map((autor)=>({
+                id: autor.id,
+                nome: autor.nome
+            }))
+            }
+        })
+
+        const totalDePaginas = Math.ceil(livro.count/limit)
+        res.status(200).json({
+            totalLivros: livro.count,
+            totalPaginas: totalDePaginas,
+            paginaAtual: page,
+            livrosPorPagina: limit,
+            livros: livrosFormatados
+        })
+        res.status(200).json(livrosFormatados)
+    } catch (error) {
+        
+    }
+}
