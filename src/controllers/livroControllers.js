@@ -67,9 +67,10 @@ export const cadastrarLivro = async (req, res) => {
             genero,
             quantidade_total,
             quantidade_disponivel,
+            autores
         })
-
-        await livro.addAutores(autores)
+        
+        
         const livroComAutor = await livroModel.findByPk(livro.id, {
             attributes: {exclude: ["created_at", "updated_at"]},
             include: {
@@ -80,14 +81,16 @@ export const cadastrarLivro = async (req, res) => {
         })
         res.status(200).json({mensagem: "livro cadastrado", livroComAutor})
     } catch (error) {
-
+        console.log(error);
+        
+        res.status(500).json({mensagem: "Erro ao cadastrar livro"})
     }
 }
 
 export const listarTodosLivros = async (req, res) => {
     const page = parseInt(req.query.page) || 1
     const limit = parseInt(req.query.limit) || 10
-    offset = (page -1) * limit
+    const offset = (page -1) * limit
 
     try {
         const livro = await livroModel.findAndCountAll({
@@ -125,6 +128,8 @@ export const listarTodosLivros = async (req, res) => {
         })
         res.status(200).json(livrosFormatados)
     } catch (error) {
+        console.log(error);
+        
         res.status(500).json({mensagem: "Erro ao listar os livros"})
     }
 }
@@ -153,5 +158,22 @@ export const buscarLivro = async (req, res) => {
         res.status(200).json(livro)
     } catch (error) {
         res.status(500).json({mensagem: "Erro ao buscar livro"})
+    }
+}
+
+export const deletarLivro = async (req, res) => {
+    const {id} = req.params
+
+    try {
+        const livro = await livroModel.findByPk(id)
+        if (!livro) {
+            res.status(400).json({mensagem: "livro não encontrado"})
+            return
+        }
+
+        await livro.destroy()
+        res.status(204).send()
+    } catch (error) {
+        res.status(500).json({mensagem: "Erro ao deletar livro"})
     }
 }

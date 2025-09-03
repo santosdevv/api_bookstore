@@ -49,7 +49,7 @@ export const cadastrarAutor = async (req, res) => {
     }
 
     try {
-        const novoAutor = autorModel.create(autor);
+        const novoAutor = await autorModel.create(autor);
         res.status(201).json({ mensagem: "autor criado com sucesso", novoAutor });
     } catch (error) {
         res.status(500).json({ mensagem: 'Erro ao cadastrar autor' });
