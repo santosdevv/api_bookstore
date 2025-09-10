@@ -36,6 +36,15 @@ const livroModel = conn.define(
         quantidade_disponivel: {
             type: DataTypes.INTEGER,
             allowNull: false
+        },
+        imagem_capa:{
+            type: DataTypes.STRING,
+            defaultValue: "filename"
+        },
+        imagem_url:{
+            type: DataTypes.STRING,
+            defaultValue: "caminhoDaImagem"
+            
         }
     },
     {

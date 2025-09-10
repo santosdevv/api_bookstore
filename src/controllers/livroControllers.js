@@ -177,3 +177,31 @@ export const deletarLivro = async (req, res) => {
         res.status(500).json({mensagem: "Erro ao deletar livro"})
     }
 }
+
+
+export const cadastrarCapaLivro = async (req, res) => {
+    const {id} = req.params
+    const {filename, path} = req.file
+
+    if (!id) {
+        res.status(400).json({mensagem: "o ID é obrigatorio"})
+        return
+    }
+
+    try {
+        const livro = await livroModel.findByPk(id)
+
+        if (!livro) {
+            res.status(400).json({mensagem: "livro não existe"})
+            return
+        }
+        livro.imagem_capa = filename
+        livro.imagem_url = path
+        
+        await livro.save()
+        res.status(200).json({mensagem: "capa cadastrada", livro})
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({mensagem: "erro interno ao cadastrar capa"})
+    }
+}
