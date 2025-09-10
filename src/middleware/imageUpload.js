@@ -3,9 +3,9 @@ import { imageStorage } from "../config/multer.js";
 
 export const imageUpload = multer({
     storage: imageStorage,
-    fileFilter: (req, file, cb) => {
-        if (!file.originalname.match(/\.(png|jpg|jpeg|webp)$/i)) {
-            return cb(new Error('Porfavor, envie apenas png, jpg, jpeg, webp.'))
+    fileFilter: (request, file, cb)=>{
+        if(!file.originalname.match(/\.(png|jpg|jpeg|webp)$/i)){
+            return cb(new Error('Por favor, envie apenas jpg,jpeg,png,webp'))
         }
         cb(null, true)
     }

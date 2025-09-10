@@ -1,5 +1,11 @@
-import { json } from "sequelize"
 import { autorModel, livroModel } from "../models/association.js"
+
+import path from "node:path"
+import { fileURLToPath } from "node:url";
+import {existsSync, unlinkSync} from "node:fs"
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 export const cadastrarLivro = async (req, res) => {
     const {
@@ -111,6 +117,8 @@ export const listarTodosLivros = async (req, res) => {
             genero: livro.genero,
             quantidade_total: livro.quantidade_total,
             quantidade_disponivel: livro.quantidade_disponivel,
+            imagem_capa: livro.imagem_capa,
+            imagem_url: livro.imagem_url,
             autores: livro.autores.map((autor)=>({
                 id: autor.id,
                 nome: autor.nome
@@ -203,5 +211,67 @@ export const cadastrarCapaLivro = async (req, res) => {
     } catch (error) {
         console.log(error);
         res.status(500).json({mensagem: "erro interno ao cadastrar capa"})
+    }
+}
+
+export const buscarImagemCapa = async (req, res) => {
+    const { filename } = req.params
+
+    if (!filename) {
+        res.status(400).json({mensagem: "filename é obrigatorio"})
+        return
+    }
+
+    try {
+        const livro = await livroModel.findOne({
+            where: {
+                imagem_capa: filename
+            }
+        })
+
+        if (!livro) {
+            res.status(404).json({mensagem: "capa de livro não encontrada"})
+            return
+        }
+
+        const caminhoDaImagem = path.join(__dirname, "../../public/livro", filename)
+
+        res.status(200).sendFile(caminhoDaImagem)
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({mensagem: "erro interno ao buscar capa do livro"})
+    }
+}
+export const deletarImagemCapa = async (req, res) => {
+    const {id} = req.params
+
+    if (!id) {
+        res.status(400).json({mensagem: "ID é obrigatorio"})
+        return
+    }
+
+    try {
+        const livro = await livroModel.findByPk(id)
+
+        if (!livro) {
+            res.status(404).json({mensagem: "livro não encontrado"})
+            return
+        }
+
+        const encontrarArquivo = path.join(__dirname, "../../public/livro", livro.imagem_capa)
+
+        if (existsSync(encontrarArquivo)) {
+            unlinkSync(encontrarArquivo)
+        }
+
+        livro.imagem_capa = "filename"
+        livro.imagem_url = "caminhoDaImagem"
+
+        await livro.save()
+
+            res.status(200).json({mensagem: "a capa foi removida"})
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({mensagem: "Erro interno ao excluir capa"})
     }
 }
